@@ -1,6 +1,7 @@
 import AnimaNumeros from "./anima-numeros.js";
 
-export default function initFetchAnimais() {
+export default function fetchAnimais(url, target) {
+  //Cria a div contendo informações com o total de animais
   function createAnimal(animal) {
     const div = document.createElement("div");
     div.classList.add("numero-animal");
@@ -9,21 +10,33 @@ export default function initFetchAnimais() {
     return div;
   }
 
-  async function fetchAnimais(url) {
-    try {
-      const animaisResponse = await fetch(url);
-      const animaisJSON = await animaisResponse.json();
-      const numerosGrid = document.querySelector(".numeros-grid");
+  // Função preenche cada animal  no DOM
+  const numerosGrid = document.querySelector(target);
+  function preencherAnimais(animal) {
+    const divAnimal = createAnimal(animal);
+    numerosGrid.appendChild(divAnimal);
+  }
 
-      animaisJSON.forEach((animal) => {
-        const divAnimal = createAnimal(animal);
-        numerosGrid.appendChild(divAnimal);
-      });
-      new AnimaNumeros("[data-numero]", ".numeros", "ativo").init(); //Inicia somente após o fetch ser resolvido (após o fetch acontecer)
+  // anima os numeros de cada animal
+  function animaAniciarNumeros() {
+    const animaNumetos = new AnimaNumeros("[data-numero]", ".numeros", "ativo"); //Inicia somente após o fetch ser resolvido (após o fetch acontecer)
+    animaNumetos.init();
+  }
+
+  // Puxa os animais atravpes de um arquivo Json e cria cada animal utlizando create animal
+  async function criarAnimais() {
+    try {
+      const animaisResponse = await fetch(url); // fetch espera resposta e depois
+      const animaisJSON = await animaisResponse.json(); // transforma a resposta em JSon
+
+      animaisJSON.forEach((animal) => preencherAnimais(animal)); //Após a trnasformação de Json ativa as funções para preecher e animais os numetos
+      animaAniciarNumeros();
     } catch (erro) {
       console.log(erro);
     }
   }
 
-  fetchAnimais("./animaisapi.json");
+  return criarAnimais();
+
+  // fetchAnimais("./animaisapi.json");
 }
