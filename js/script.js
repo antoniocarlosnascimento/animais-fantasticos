@@ -8,7 +8,7 @@ import initMenuMobile from "./modules/menu-mobile.js";
 
 import initFuncionamento from "./modules/funcionamento.js";
 import fetchAnimais from "./modules/fetch-animais.js";
-import initFetchBitcoin from "./modules/fetch-bitcoin.js";
+import fetchBitcoin from "./modules/fetch-bitcoin.js";
 import initAnimacaoScroll from "./modules/scroll-animacao.js";
 
 // const options = { behavior: "smooth", block: "start" };
@@ -29,11 +29,10 @@ new Modal(
 new Tooltip("[data-tooltip]").init();
 initDropdownMenu();
 initMenuMobile();
-
 initFuncionamento();
-initFetchBitcoin();
 initAnimacaoScroll();
 
 fetchAnimais("../../animaisapi.json", ".numeros-grid");
+fetchBitcoin("https://www.blockchain.com/ticker", ".btc-preco");
 // import $ from "jquery";
 // import _ from "lodash";
