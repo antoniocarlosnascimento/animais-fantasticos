@@ -1,22 +1,31 @@
-export default function initTooltip() {
-  const tooltips = document.querySelectorAll("[data-tooltip]");
-  const onMouseMove = {
-    handleEvent(event) {
-      this.tooltipBox.style.top = `${event.pageY + 20}px`;
-      this.tooltipBox.style.left = `${event.pageX + 20}px`;
-    },
-  };
+export default class Tooltip {
+  constructor(tooltips) {
+    this.tooltips = document.querySelectorAll(tooltips);
 
-  const onMouseLeave = {
-    handleEvent() {
-      //o nome do metodo tem que ser exatamente esse
-      this.tooltipBox.remove();
-      this.element.removeEventListener("mouseleave", onMouseLeave); //removendo o evento quando não estiver mais encima do elemento
-      this.element.removeEventListener("mouseleave", onMouseMove);
-    },
-  };
+    // bind do objeto da classe aos callbacks
+    this.onMouseMove = this.onMouseMove.bind(this);
+    this.onMouseLeave = this.onMouseLeave.bind(this);
+    this.onMouseOver = this.onMouseOver.bind(this);
+  }
 
-  function criarTooltipBox(element) {
+  //Move a tooltip com base em seu estilos de acordo com a posição do mouse
+  onMouseMove(event) {
+    this.tooltipBox.style.top = `${event.pageY + 20}px`;
+    if (event.pageX + 240 > window.innerWidth)
+      this.tooltipBox.style.left = `${event.pageX - 190}px`;
+    else this.tooltipBox.style.left = `${event.pageX + 20}px`;
+  }
+
+  // Remove a tooltip e os eventos de mousemove e mouseleave
+  // o parametro passado esta sendo o usado o conceito de desestruturação de objeto
+  onMouseLeave({ currentTarget }) {
+    this.tooltipBox.remove();
+    currentTarget.removeEventListener("mouseleave", this.onMouseLeave); //removendo o evento quando o mouse não estiver mais encima do elemento
+    currentTarget.removeEventListener("mouseleave", this.onMouseMove);
+  }
+
+  // Cria tooltip box e coloca no body
+  criarTooltipBox(element) {
     const tooltipBox = document.createElement("div");
     const text = element.getAttribute("aria-label");
 
@@ -24,21 +33,28 @@ export default function initTooltip() {
     tooltipBox.innerText = text;
     document.body.appendChild(tooltipBox);
 
-    return tooltipBox;
+    this.tooltipBox = tooltipBox;
   }
 
-  function onMouseOver() {
-    const tooltipBox = criarTooltipBox(this); //Este this é referent ao tooltips do item do addEventListener
+  // Cria a tooltip e adiciona os eventos de mousemove e mouseleave ao target
+  // o parametro passado esta sendo o usado o conceito de desestruturação de objeto
+  onMouseOver({ currentTarget }) {
+    // Cria a tooltipbox e coloca em uma propriedade
+    this.criarTooltipBox(currentTarget);
 
-    onMouseMove.tooltipBox = tooltipBox; //Add atributo tooltipBox com o valor de tooltipBox ao objeto onMouseMove
-    this.addEventListener("mouseleave", onMouseLeave); //Passando como callback o objeti onMouseLeave
-
-    onMouseLeave.tooltipBox = tooltipBox; //criando e atribuindo o elemento tooltipBox para o atrinuto tooltipBox do objeto onMouseLeave
-    onMouseLeave.element = this;
-    this.addEventListener("mousemove", onMouseMove);
+    currentTarget.addEventListener("mouseleave", this.onMouseLeave); //Passando como callback o objeti onMouseLeave
+    currentTarget.addEventListener("mousemove", this.onMouseMove);
   }
 
-  tooltips.forEach((item) => {
-    item.addEventListener("mouseover", onMouseOver);
-  });
+  // Adiciona os eventos de mouseover a cada tooltip
+  addTooltipsEvent() {
+    this.tooltips.forEach((item) => {
+      item.addEventListener("mouseover", this.onMouseOver);
+    });
+  }
+
+  init() {
+    if (this.tooltips.length) this.addTooltipsEvent();
+    return this;
+  }
 }
