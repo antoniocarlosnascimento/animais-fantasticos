@@ -3,22 +3,52 @@ export default class ScrollAnima {
     this.sections = document.querySelectorAll(sections);
     this.windowMetade = window.innerHeight * 0.6;
 
-    this.animaScroll = this.animaScroll.bind(this);
+    this.checkDiastancia = this.checkDiastancia.bind(this);
   }
 
-  animaScroll() {
-    this.sections.forEach((section) => {
-      const sectionTop = section.getBoundingClientRect().top;
-      const isSectionVisible = sectionTop - this.windowMetade < 0;
-      if (isSectionVisible) section.classList.add("ativo");
-      else if (section.classList.contains("ativo")) {
-        section.classList.remove("ativo");
-      }
+  // Pega a distacia de cada item em relação ao topo do site
+  getDistancia() {
+    this.distancia = [...this.sections].map((section) => {
+      const offset = section.offsetTop; // offsetTop pega a distancia do topo de forma estatica
+      return {
+        element: section,
+        offset: Math.floor(offset - this.windowMetade),
+      };
+    });
+    // console.log(this.distancia);
+  }
+
+  // Verifica a distancia em cada objeto em relação ao scroll do site
+  checkDiastancia() {
+    this.distancia.forEach((item) => {
+      if (window.pageYOffset > item.offset) item.element.classList.add("ativo");
+      else if (item.element.classList.contains("ativo"))
+        item.element.classList.remove("ativo");
     });
   }
 
+  // animaScroll() {
+  //   console.log("ativou");
+  //   this.sections.forEach((section) => {
+  //     const sectionTop = section.getBoundingClientRect().top; //getBoundingClientRect pega a distancia do topo de forma dinamica
+  //     const isSectionVisible = sectionTop - this.windowMetade < 0;
+  //     if (isSectionVisible) section.classList.add("ativo");
+  //     else if (section.classList.contains("ativo")) {
+  //       section.classList.remove("ativo");
+  //     }
+  //   });
+  // }
+
   init() {
-    this.animaScroll();
-    window.addEventListener("scroll", this.animaScroll);
+    if (this.sections.length) {
+      this.getDistancia();
+      this.checkDiastancia();
+      window.addEventListener("scroll", this.checkDiastancia);
+    }
+  }
+
+  // Desctriu o evento de Scroll
+  stopScroll() {
+    window.removeEventListener("scroll", this.checkDiastancia);
   }
 }
