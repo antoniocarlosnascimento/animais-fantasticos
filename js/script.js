@@ -31,7 +31,8 @@ new DropdownMenu("[data-dropdown]").init();
 new MenuMobile('[data-menu="button"]', '[data-menu="list"]').init();
 new Funcionamento("[data-semana]", "aberto").init();
 
-fetchAnimais("../../animaisapi.json", ".numeros-grid");
+// fetchAnimais("../../animaisapi.json", ".numeros-grid");
+fetchAnimais("./animaisapi.json", ".numeros-grid");
 fetchBitcoin("https://www.blockchain.com/ticker", ".btc-preco");
 // import $ from "jquery";
 // import _ from "lodash";
