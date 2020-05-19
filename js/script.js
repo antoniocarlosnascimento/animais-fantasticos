@@ -3,7 +3,7 @@ import Accordion from "./modules/accordion.js";
 import TabNav from "./modules/tabnav.js";
 import Modal from "./modules/modal.js";
 import Tooltip from "./modules/tooltip.js";
-import initDropdownMenu from "./modules/dropdown-menu.js";
+import DropdownMenu from "./modules/dropdown-menu.js";
 import initMenuMobile from "./modules/menu-mobile.js";
 
 import initFuncionamento from "./modules/funcionamento.js";
@@ -25,12 +25,11 @@ new Modal(
   '[data-modal="fechar"]',
   '[data-modal="container"]'
 ).init();
-
 new Tooltip("[data-tooltip]").init();
-initDropdownMenu();
+new ScrollAnima('[data-anime="scroll"]').init();
+new DropdownMenu("[data-dropdown]").init();
 initMenuMobile();
 initFuncionamento();
-new ScrollAnima('[data-anime="scroll"]').init();
 
 fetchAnimais("../../animaisapi.json", ".numeros-grid");
 fetchBitcoin("https://www.blockchain.com/ticker", ".btc-preco");
