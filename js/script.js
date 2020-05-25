@@ -10,6 +10,7 @@ import Funcionamento from "./modules/funcionamento.js";
 import fetchAnimais from "./modules/fetch-animais.js";
 import fetchBitcoin from "./modules/fetch-bitcoin.js";
 import ScrollAnima from "./modules/scroll-anima.js";
+import SlideNav from "./modules/slide.js";
 
 // const options = { behavior: "smooth", block: "start" };
 // const scrollSuave = new ScrollSuave(
@@ -36,3 +37,8 @@ fetchAnimais("./animaisapi.json", ".numeros-grid");
 fetchBitcoin("https://www.blockchain.com/ticker", ".btc-preco");
 // import $ from "jquery";
 // import _ from "lodash";
+
+const slide = new SlideNav(".slide", ".slider-wrapper");
+slide.init();
+// console.log(slide);
+slide.addControl(".custom-control");
